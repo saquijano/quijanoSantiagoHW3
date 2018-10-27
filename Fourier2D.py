@@ -7,15 +7,13 @@ from skimage import io
 
 
 arbol=sp.misc.imread("arbol.png",flatten=True)
-#arbol2=io.read("arbol.png")/255
-print(type(arbol),arbol.size)
 plt.imshow(arbol)
 plt.show()
 
 #transformada
 base,altura=np.shape(arbol)
 trans = fft2(arbol)/(base*altura)
-SS=1/(altura)
+SS=1/(altura*base)
 print(np.shape(trans),np.shape(arbol))
 
 
@@ -25,21 +23,33 @@ plt.figure()
 plt.xlabel("frecuencia")
 plt.plot(freqv,trans)
 plt.legend()
-plt.show()
+#plt.show()
 
 graf=np.abs(trans)
 
 
 #funcion para filtrar transformada
 def bajos(freq,sube):
-	freqmenor=[]
+	freqmenor=np.zeros(256)
 	lista=[]
-	for i in range(len(freq)):
-		if (freq[i]<1000 and freq[i]>-1000):
-			freqmenor.append(freq[i])
-			lista.append(sube[i])
+	for i in range(np.shape(freq)[0]):
+		for j in range(np.shape(freq)[1]):
+			if (freq[i,j]<1000 and freq[i,j]>-1000):
+				freqmenor[i,j]=(freq[i])
 	return freqmenor, lista
 
-#filtr=bajos(freqx,sumar)
+def bajosen(freq,sube):
+	freqmenor=np.linspace(0,0,len(freq))
+	lista=np.linspace(0,0,len(sube))
+	for i in range(len(freq)):
+		if (freq[i]<2000 and freq[i]>-2000):
+			freqmenor[i]=freq[i]
+			#lista[i]=sube[i]
+	return freqmenor#, lista
+
+filtr=bajosen(freqv,trans)
+plt.figure()
+plt.plot(filtr,trans)
+plt.show()
 
 #invX=ifft(filtr[1])
