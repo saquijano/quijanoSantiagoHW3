@@ -85,7 +85,7 @@ def bajos2(freq,sube):
 			lista[i]=sube[i]
 	return freqmenor, lista
 
-filtr=bajos(freqx,sumar1)
+filtr=bajos2(freqx,sumar1)
 filtr2=bajos2(freqx,sumar1)
 
 plt.figure()
@@ -116,7 +116,7 @@ plt.title("Transformada inversa de fourier")
 plt.xlabel("tiempo")
 plt.ylabel("y(x)")
 plt.savefig("quijanoSantiago_filtrada.pdf")
-plt.show()
+#plt.show()
 
 ################################3
 incompletos=np.genfromtxt("incompletos.dat",delimiter=",")
@@ -178,7 +178,7 @@ plt.plot(freqCub,tcub,label="cubica")
 #plt.plot(cub1,label="4")
 plt.xlabel("frecuencia")
 plt.ylabel("y(x)")
-plt.title("tres transformadas de fourier")
+plt.title("Las tres transformaciones de fourier")
 plt.legend()
 plt.savefig("quijanoSantiago_TF_interpola.pdf")
 #plt.show()
@@ -205,15 +205,23 @@ filtr=bajos(freqx,sumar)
 
 #filtro
 plt.figure()
+plt.subplot(2,1,1)
 plt.plot(cub500[0],cub500[1],label="500 cubico")
-plt.plot(cub[0],cub[1],label="1000 cubico")
-plt.plot(cua500[0],cua500[1],label="500 cuadratico")
-plt.plot(cua[0],cua[1],label="500 cuadratico")
 plt.plot(ori500[0],ori500[1],label="500 originales")
+plt.plot(cua500[0],cua500[1],label="500 cuadratico")
+plt.xlabel("tiempo")
+plt.ylabel("frecuencia")
+plt.legend()
+plt.title("Filtros 500")
+plt.subplot(2,1,2)
+plt.plot(cua1000[0],cua1000[1],label="500 cuadratico")
+plt.plot(cub1000[0],cub1000[1],label="1000 cubico")
 plt.plot(filtr[0],filtr[1],label="1000 originales")
 plt.xlabel("tiempo")
 plt.ylabel("frecuencia")
 plt.legend()
-plt.title("Filtros de todas las graficas")
+plt.title("Filtros 1000")
+
 plt.savefig("quijanoSantiago_2Filtros.pdf")
-#plt.show()
+plt.show()
+
