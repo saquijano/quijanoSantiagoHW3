@@ -29,9 +29,10 @@ def transfor(xsen,ysen):
 	for i in range(len(xsen)):
 		for j in range(len(xsen)):
 			sumar[i]=sumar[i]+(np.exp(-1j*2*np.pi*j*i/512)*ysen[j])
-	sumar=abs(sumar/512)
+	sumar=sumar/512
 	return sumar
-sumar=transfor(xsen,ysen)
+sumar=abs(transfor(xsen,ysen))
+sumar1=transfor(xsen,ysen)
 
 #uso los paquetes para recuperar las frecuencias
 ########
@@ -84,8 +85,8 @@ def bajos2(freq,sube):
 			lista[i]=sube[i]
 	return freqmenor, lista
 
-filtr=bajos(freqx,sumar)
-filtr2=bajos2(freqx,sumar)
+filtr=bajos(freqx,sumar1)
+filtr2=bajos2(freqx,sumar1)
 
 plt.figure()
 plt.plot(filtr2[0],filtr2[1])
@@ -93,31 +94,32 @@ plt.plot(filtr[0],filtr[1])
 plt.title("Transformada de fourier filtrada")
 plt.xlabel("frecuencia")
 plt.ylabel("")
+#plt.savefig("quijanoSantiago_filtrada.pdf")
+#plt.show()
+
+
+
+#################################
+#trasnformada inversa uso los vaores de la transformada negativos y positivos
+
+
+mismoTam=len(xsen)/len(filtr[1])
+#realizo la inversa de la transformada de fourier
+invX=ifft(filtr2[1])
+
+#creo linspace con mismo tiempo de la funcion original
+tInv=np.linspace(min(xsen),max(xsen),len(invX))
+
+plt.figure()
+plt.plot(xsen,invX)
+plt.title("Transformada inversa de fourier")
+plt.xlabel("tiempo")
+plt.ylabel("y(x)")
 plt.savefig("quijanoSantiago_filtrada.pdf")
 plt.show()
 
-incompletos=np.genfromtxt("incompletos.dat",delimiter=",")
-
-####################################33
-#trasnformada inversa no se usa
-
-
-#mismoTam=len(xsen)/len(filtr[1])
-#realizo la inversa de la transformada de fourier
-#invX=ifft(filtr[1])
-
-#creo linspace con mismo tiempo de la funcion original
-#tInv=np.linspace(min(xsen),max(xsen),len(invX))
-
-#plt.figure()
-#plt.plot(tInv,invX)
-#plt.title("Transformada inversa de fourier")
-#plt.xlabel("tiempo")
-#plt.ylabel("y(x)")
-#plt.savefig("
-#plt.show()
-
 ################################3
+incompletos=np.genfromtxt("incompletos.dat",delimiter=",")
 
 xinc=incompletos[:,0]
 yinc=incompletos[:,1]
