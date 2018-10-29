@@ -71,10 +71,15 @@ print("Con vector propio:", vectores[:,0])
 #print("vectores propio secundario, el 2", valores[1])
 print("Con vector propio:", vectores[:,1])
 
-pEje=np.matmul(datos,vectores[0])
-sEje=np.matmul(datos,vectores[1])
+pEje=np.matmul(datos,vectores)
+princi=np.matmul(datos,vectores[2])
 
-plt.scatter(pEje,sEje)
+plt.figure()
+plt.scatter(pEje[:,2],pEje[:,3])
+
+plt.figure()
+plt.plot(princi)
+plt.title("otro")
 plt.show()
 
 
