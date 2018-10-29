@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pylab as plt
 import scipy as sp
 from scipy.fftpack import fft, fftfreq,ifft
-import scipy.io.wavfile as wav
 from scipy import interpolate
 
 senal=np.genfromtxt("signal.dat",delimiter=",")
