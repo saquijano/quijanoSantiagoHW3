@@ -14,16 +14,16 @@ plt.imshow(arbol)
 #transformada
 base,altura=np.shape(arbol)
 trans = fft2(arbol)
-#nuevo
+
 shi=fftshift(trans)
 grashi=np.abs(shi)
 fgraf=np.log(grashi)
 
+#grafica de la transformada
 plt.figure()
-plt.imshow(abs(fgraf),cmap='gray')
+plt.imshow(abs(fgraf), cmap='gray')
 plt.title("Transformada de Fourier")
 plt.savefig("quijanoSantiago_FT2D.pdf")
-#fin
 
 SS=1/(altura*base)
 
@@ -69,50 +69,9 @@ plt.savefig("quijanoSantiago_FT2D_filtrada.pdf")
 #plt.show()
 
 plt.figure()
-plt.title("imagen despues de filtro")
+plt.title("Imagen despues de filtro")
 plt.imshow(abs(invX2))
-plt.show()
+plt.savefig("quijanoSantiago_Imagen_Filtrada.pdf")
+#plt.show()
 #######
 
-#print(freqv,freqh)
-#plt.figure()
-#plt.title("Transformada de fourier")
-#plt.xlabel("frecuencia")
-#plt.plot(freqv,trans)
-
-freqv=fftfreq(np.shape(trans)[0],SS)
-freqh=fftfreq(np.shape(trans)[1],SS)
-
-frecuencia=np.zeros((256,256))
-for i in range(np.shape(frecuencia)[0]):
-	frecuencia[:,i]=freqv
-
-#funcion para filtrar transformada
-def bajos(freq,sube):
-	freqmenor=np.zeros((256,256))
-	lista=np.zeros((256,256))
-	for i in range(np.shape(sube)[0]):
-		for j in range(np.shape(sube)[1]):
-			if ((freq[i,j]>2000 or freq[i,j]<-2000) or (freq[i,j]<500 and freq[i,j]>-500)):
-				freqmenor[i,j]=freq[i,j]
-				lista[i,j]=sube[i,j]
-	return freqmenor, lista
-
-def bajosen(freq,sube):
-	freqmenor=np.linspace(0,0,len(freq))
-	lista=np.linspace(0,0,len(sube))
-	for i in range(len(freq)):
-		if (freq[i]<2400 and freq[i]>-2400):
-			freqmenor[i]=freq[i]
-			#lista[i]=sube[i]
-	return freqmenor#, lista
-
-filtr=bajos(frecuencia,trans)
-
-##### no mover
-#invX=ifft2(filtr[1])
-
-#plt.figure()
-#plt.title("imagen despues de filtro")
-#plt.imshow(abs(invX))
-#plt.show()

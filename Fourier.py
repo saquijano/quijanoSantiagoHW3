@@ -56,7 +56,7 @@ def principales(freqx):
 	guardo=[]
 	hola=[]
 	for i in range(len(freqx)):
-		if sumar[i]>0.45:
+		if sumar[i]>0.40:
 			guardo.append(freqx[i])
 			hola.append(i)
 	return guardo
@@ -126,7 +126,7 @@ yinc=incompletos[:,1]
 #parte datos incompletos
 
 print(len(xinc),len(xsen))
-print("A los dator incompletos si se le puede hacer una transformada de fourier pero parece que esta funcion tiene menos frecuencias, ya que tiene menos ruido. Por esto no tiene sentido realizar una transformada de fourier")
+print("A los datos incompletos si se le puede hacer una transformada de fourier pero parece que esta funcion tiene menos frecuencias, ya que tiene menos ruido. Por esto no tiene sentido realizar una transformada de fourier")
 
 def interpolar (x,y):
 	x2=np.linspace(min(x),max(x),512)
@@ -222,5 +222,5 @@ plt.legend()
 plt.title("Filtros 1000")
 
 plt.savefig("quijanoSantiago_2Filtros.pdf")
-plt.show()
+#plt.show()
 
