@@ -16,7 +16,6 @@ plt.xlabel("tiempo")
 plt.ylabel("y(x)")
 plt.title("Senal")
 plt.savefig("quijanoSantiago_signal.pdf")
-#plt.show()
 
 SS=xsen[1]-xsen[0] #sample spacing /dt
 SR=1/SS #sample rating (1/dt)
@@ -92,7 +91,7 @@ def bajos2(freq,sube):
 
 filtr=bajos(freqx,sumar1) ###sumar es transformada
 filtr2=bajos2(freqx,sumar1)
-
+# filtrada de fourier
 plt.figure()
 plt.plot(filtr2[0],filtr2[1], label="1")
 plt.plot(filtr[0],filtr[1],label="2")
@@ -108,12 +107,13 @@ inve=invrs(sumar1,xsen)
 #inv=invrs(filtr2[1])
 #creo linspace con mismo tiempo de la funcion original
 tInv=np.linspace(min(xsen),max(xsen),len(invX))
-
+#inversa de la filtrada de fourier
 plt.figure()
 plt.plot(xsen,invX)
 plt.title("Transformada inversa de fourier")
 plt.xlabel("tiempo")
 plt.ylabel("y(x)")
+plt.legend()
 plt.savefig("quijanoSantiago_filtrada.pdf")
 #plt.show()
 
@@ -125,7 +125,6 @@ yinc=incompletos[:,1]
 
 #parte datos incompletos
 
-print(len(xinc),len(xsen))
 print("A los datos incompletos si se le puede hacer una transformada de fourier pero parece que esta funcion tiene menos frecuencias, ya que tiene menos ruido. Por esto no tiene sentido realizar una transformada de fourier")
 
 
@@ -147,8 +146,6 @@ cub=interpolar(xinc,yinc)[1]
 cub1=interpolar(xinc,yinc)[3]
 xinter=interpolar(xinc,yinc)[4]
 
-
-
 #creo sample spaceing para las interpoladas
 SS1=xinter[1]-xinter[0]
 freqCub=fftfreq(len(xsen),SS1) #frecuencias de funcion cubica
@@ -157,6 +154,7 @@ tcub=abs(transfor(xsen,cub))
 tcua=abs(transfor(xsen,cua))
 freqCua=fftfreq(len(xsen),SS1) #frecuencias de funcion cuadrada
 
+## transformdas de las interpolaciones
 plt.figure()
 plt.title("Las tres transformaciones de fourier")
 plt.subplot(3,1,1)
@@ -164,23 +162,21 @@ plt.plot(freqCua,tcua,label="cuadrada",c="b")
 plt.xlabel("frecuencia")
 plt.ylabel("y(x)")
 plt.legend()
-#plt.plot(cua1,label="2")
 plt.subplot(3,1,2)
 plt.plot(freqx,sumar,label="completa",c="y")
 plt.xlabel("frecuencia")
 plt.ylabel("y(x)")
 plt.legend()
-#plt.plot(cub1,label="4")
 plt.subplot(3,1,3)
 plt.plot(freqCub,tcub,label="cubica",c="g")
 plt.xlabel("frecuencia")
 plt.ylabel("y(x)")
 plt.legend()
 plt.savefig("quijanoSantiago_TF_interpola.pdf")
-#plt.show()
+plt.show()
 
 
-print("No se observan grandes diferencias entre las transformadas de fourier de la frecuencia principal. Sin embargo para la segunda frecuencia mas importante se ve una disminucion importante que se ha perdido. Las otras frecuencias parecen comportarse de manera similar, incluyendo aquella entre las frecuencias principales.")
+print("No se observan grandes diferencias entre los valores obtenidos en la transformadas de fourier de la frecuencia principal. Sin embargo para la segunda frecuencia mas importante se ve una disminucion importante, infromacion que se ha perdido. Las otras frecuencias parecen comportarse de manera similar, incluyendo aquella entre las frecuencias principales. La frecuencias en las transformaciones interpoladas parecen concentrarse entre -2500 y 2500, mientra la original tiene frecuencias que van de -10000 a 10000.")
 
 #funcion para pasar solo los valores menores a 1000
 #def bajos500(freq,sube):
@@ -201,16 +197,17 @@ def bajos500(freq,sube):
 			lista[i]=sube[i]
 	return freqmenor, lista
 
-
+# funciones interpoladas transformadas
 tcub2=transfor(xsen,cub)
 tcua2=transfor(xsen,cua)
+#Se le aplica el filtro a las funciones transformadas
 cub500=bajos500(freqCub,tcub2)
 cub1000=bajos2(freqCub,tcub2)
 cua500=bajos500(freqCua,tcua2)
 cua1000=bajos2(freqCua,tcua2)
 ori500=bajos500(freqx,sumar1)
 filtr=bajos2(freqx,sumar1)
-
+#Inversa de las funciones filtradas
 icub500=invrs(cub500[1],xsen)
 icub1000=invrs(cub500[1],xsen)
 icua500=invrs(cua500[1],xsen)
@@ -219,11 +216,11 @@ iori500=invrs(ori500[1],xsen)
 iori1000=invrs(filtr2[1],xsen)
 
 
-#filtro
+#filtro funciones transformadas filtras
 plt.figure()
 plt.subplot(2,1,1)
 plt.plot(cua500[0],cua500[1],label="500 cuadratico")
-#plt.plot(cub500[0],cub500[1],label="500 cubico")
+plt.plot(cub500[0],cub500[1],label="500 cubico")
 plt.plot(ori500[0],ori500[1],label="500 originales")
 plt.xlabel("tiempo")
 plt.ylabel("frecuencia")
@@ -231,23 +228,21 @@ plt.legend()
 plt.title("Filtros 500")
 plt.subplot(2,1,2)
 plt.plot(cua1000[0],cua1000[1],label="500 cuadratico")
-#plt.plot(cub1000[0],cub1000[1],label="1000 cubico")
+plt.plot(cub1000[0],cub1000[1],label="1000 cubico")
 plt.plot(filtr[0],filtr[1],label="1000 originales")
 plt.xlabel("tiempo")
 plt.ylabel("frecuencia")
-plt.legend()
 plt.title("Filtros 1000")
-#plt.savefig("quijanoSantiago_2Filtros.pdf")
-#plt.show()
+plt.legend()
+
 
 #####
-#filtro
+#funciones inversas filtradas
 plt.figure()
 plt.subplot(2,1,1)
 plt.plot(xsen,icub500,label="500 cubico")
 plt.plot(xsen,iori500,label="500 originales")
 plt.plot(xsen,icua500,label="500 cuadratico")
-
 plt.xlabel("tiempo")
 plt.ylabel("frecuencia")
 plt.legend()
@@ -261,4 +256,3 @@ plt.ylabel("frecuencia")
 plt.legend()
 plt.title("Filtros 1000")
 plt.savefig("quijanoSantiago_2Filtros.pdf")
-plt.show()

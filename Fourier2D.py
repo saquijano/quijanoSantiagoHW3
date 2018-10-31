@@ -44,10 +44,10 @@ def salvar(shi2,abj,arr,izq,der):
 	return shi2
 
 #shi3=salvar(shi2,0,256,120,136)
-shi4=borrar(shi2,115,120,102,107)
-shi5=borrar(shi4,135,140,150,155)
-shi6=borrar(shi5,60,65,60,65)
-shi7=borrar(shi6,190,195,190,195)
+shi4=borrar(shi2,117,120,103,106)
+shi5=borrar(shi4,136,139,151,154)
+shi6=borrar(shi5,62,65,62,65)
+shi7=borrar(shi6,191,194,191,194)
 filGra=np.abs(shi7)
 graficarFil=np.log(filGra)
 filtra=ifftshift(shi7)
@@ -62,12 +62,10 @@ plt.imshow(graficarFil, cmap='gray')
 plt.ylabel("frecuencia")
 plt.xlabel(" ")
 plt.savefig("quijanoSantiago_FT2D_filtrada.pdf")
-#plt.show()
 
 plt.figure()
 plt.title("Imagen despues de filtro")
 plt.imshow(abs(invX2))
 plt.savefig("quijanoSantiago_Imagen_Filtrada.pdf")
-plt.show()
 #######
 

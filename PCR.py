@@ -85,6 +85,7 @@ print("vectores propio secundario, el 2", valores[1])
 print("Con vector propio:", vectores[:,1])
 
 pEje=np.matmul(datos,vectores)
+print(np.shape(pEje))
 benPlot=np.matmul(benignos,vectores)
 #benPlot2=np.matmul(benignos,vectores[1])
 
@@ -99,18 +100,16 @@ print ("el eje principal es:",PC1)
 
 print ("El eje secundario es:", PC2)
 plt.figure()
-plt.title("PCA, primeros componentes")
+plt.title("PCA, componentes principales")
 plt.scatter(benPlot[:,0],benPlot[:,1],label="benignos")
 plt.scatter(malPlot[:,0],malPlot[:,1],label="malignos")
 plt.xlabel("PC1")
 plt.ylabel("PC2")
 plt.legend()
 plt.grid()
+#plt.savefig("hola.pdf")
 plt.show()
 
-plt.figure()
-plt.plot(princi)
-plt.title("otro")
 
 
-print("El metodo de pca ayuda a reducir las variables que se usan para analizar un problema. Por esto podria ser util en este caso, ya que, se hace un estudio con muchas variables. Sin embargo no parce que se separen mucho los grupos de beningno y maligno. Por lo cual puede que estos dos ejes no ayuden a clarificar el tipo de tumor.")
+print("El metodo de pca prodria se util en este caso porque ademas de reducir las variables de estudio permite identificar algunos tumores malignos. Si el paciente muestra un valor elevado en el componente principal (PC1) despues de reducir las variables, posiblemente presente un tumor maligno. Sin embargo, este diagnostico es util solo si el valor de PC1 es muy elevado, ya que debajo de 1500 los tumores benignos y malignos se superpoenen. De igual forma solo a valores muy bajos de PC1 se podria cosniderar como benigno el tumor.")
