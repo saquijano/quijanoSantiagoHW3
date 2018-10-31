@@ -19,25 +19,33 @@ plt.savefig("quijanoSantiago_signal.pdf")
 #plt.show()
 
 SS=xsen[1]-xsen[0] #sample spacing /dt
-
 SR=1/SS #sample rating (1/dt)
 
-# no se uso
 def transfor(xsen,ysen):
+	N=len(xsen)
+	pi=np.pi
 	sumar=np.linspace(0,0,len(xsen))
 	for i in range(len(xsen)):
-		for j in range(len(xsen)):
-			sumar[i]=sumar[i]+(np.exp(-1j*2*np.pi*j*i/512)*ysen[j])
-	sumar=sumar/512
+		for j in range(len(ysen)):
+			sumar[i]+=ysen[j]*np.exp((-1j)*2*pi*i*j/N)
+	sumar=sumar/N
 	return sumar
+
+
 sumar=abs(transfor(xsen,ysen))
 sumar1=transfor(xsen,ysen)
+
+def invrs(trans,xsen):
+	sumar=np.linspace(0,0,len(xsen))
+	for i in range(len(xsen)):
+		for j in range(len(trans)):
+			sumar[i]+=trans[j]*np.exp((+1j)*np.pi*2*j*i/512)
+	return sumar
 
 #uso los paquetes para recuperar las frecuencias
 ########
 #fft_enX=fft(ysen)/len(xsen) #solo la hice para comparar
 #graficar=abs(fft_enX)  #solo se usan valores positivos
-#######
 freqx=fftfreq(len(xsen),SS) #frecuencias de funcion
 
 #transformada
@@ -51,7 +59,6 @@ plt.savefig("quijanoSantiago_TF.pdf")
 
 
 #funcion que devuelve las frecuencias mas altas
-
 def principales(freqx):
 	guardo=[]
 	hola=[]
@@ -61,16 +68,15 @@ def principales(freqx):
 			hola.append(i)
 	return guardo
 
-
 #frecuencias principales
 print("Las frecuencias principales son:"+str(principales(freqx)))
 
-#funcion para pasar solo los valores menores a 1000
+##funcion para pasar solo los valores menores a 1000
 def bajos(freq,sube):
 	freqmenor=[]
 	lista=[]
 	for i in range(len(freq)):
-		if (freq[i]<1000 and freq[i]>-1000):
+		if (abs(freq[i])<=1000):
 			freqmenor.append(freq[i])
 			lista.append(sube[i])
 	return freqmenor, lista
@@ -79,33 +85,27 @@ def bajos2(freq,sube):
 	freqmenor=np.linspace(0,0,len(freq))
 	lista=np.linspace(0,0,len(sube))
 	for i in range(len(freq)):
-		if (freq[i]<1000 and freq[i]>-1000):
+		if (abs(freq[i])<=1000):
 			freqmenor[i]=freq[i]
 			lista[i]=sube[i]
 	return freqmenor, lista
 
-filtr=bajos2(freqx,sumar1)
+filtr=bajos(freqx,sumar1) ###sumar es transformada
 filtr2=bajos2(freqx,sumar1)
 
 plt.figure()
-plt.plot(filtr2[0],filtr2[1])
-plt.plot(filtr[0],filtr[1])
+plt.plot(filtr2[0],filtr2[1], label="1")
+plt.plot(filtr[0],filtr[1],label="2")
 plt.title("Transformada de fourier filtrada")
 plt.xlabel("frecuencia")
+plt.legend()
 plt.ylabel("")
-#plt.savefig("quijanoSantiago_filtrada.pdf")
-#plt.show()
 
-
-
-#################################
-#trasnformada inversa uso los vaores de la transformada negativos y positivos
-
-
-mismoTam=len(xsen)/len(filtr[1])
-#realizo la inversa de la transformada de fourier
+#trasnformada inversa uso los vaores de la transformada negativos y positivos realizo la inversa de la transformada de fourier
 invX=ifft(filtr2[1])
-
+invX42=ifft(sumar1)
+inve=invrs(sumar1,xsen)
+#inv=invrs(filtr2[1])
 #creo linspace con mismo tiempo de la funcion original
 tInv=np.linspace(min(xsen),max(xsen),len(invX))
 
@@ -127,6 +127,7 @@ yinc=incompletos[:,1]
 
 print(len(xinc),len(xsen))
 print("A los datos incompletos si se le puede hacer una transformada de fourier pero parece que esta funcion tiene menos frecuencias, ya que tiene menos ruido. Por esto no tiene sentido realizar una transformada de fourier")
+
 
 def interpolar (x,y):
 	x2=np.linspace(min(x),max(x),512)
@@ -150,34 +151,30 @@ xinter=interpolar(xinc,yinc)[4]
 
 #creo sample spaceing para las interpoladas
 SS1=xinter[1]-xinter[0]
-
-tcub=np.linspace(0,0,len(cub))
-for i in range(len(xsen)):
-	for j in range(len(xsen)):
-		tcub[i]=tcub[i]+(np.exp(-1j*2*np.pi*j*i/512)*cub[j])
-tcub=abs(tcub/512)
-
 freqCub=fftfreq(len(xsen),SS1) #frecuencias de funcion cubica
 
-
-tcua=np.linspace(0,0,len(cub))
-for i in range(len(xsen)):
-	for j in range(len(xsen)):
-		tcua[i]=tcua[i]+(np.exp(-1j*2*np.pi*j*i/512)*cua[j])
-tcua=abs(tcua/512)
+tcub=abs(transfor(xsen,cub))
+tcua=abs(transfor(xsen,cua))
 freqCua=fftfreq(len(xsen),SS1) #frecuencias de funcion cuadrada
 
-print(SS,SS1,len(xinter),len(xsen))
-
 plt.figure()
-plt.plot(freqCua,tcua,label="cuadrada")
-#plt.plot(cua1,label="2")
-plt.plot(freqx,sumar,label="completa")
-plt.plot(freqCub,tcub,label="cubica")
-#plt.plot(cub1,label="4")
+plt.title("Las tres transformaciones de fourier")
+plt.subplot(3,1,1)
+plt.plot(freqCua,tcua,label="cuadrada",c="b")
 plt.xlabel("frecuencia")
 plt.ylabel("y(x)")
-plt.title("Las tres transformaciones de fourier")
+plt.legend()
+#plt.plot(cua1,label="2")
+plt.subplot(3,1,2)
+plt.plot(freqx,sumar,label="completa",c="y")
+plt.xlabel("frecuencia")
+plt.ylabel("y(x)")
+plt.legend()
+#plt.plot(cub1,label="4")
+plt.subplot(3,1,3)
+plt.plot(freqCub,tcub,label="cubica",c="g")
+plt.xlabel("frecuencia")
+plt.ylabel("y(x)")
 plt.legend()
 plt.savefig("quijanoSantiago_TF_interpola.pdf")
 #plt.show()
@@ -186,41 +183,82 @@ plt.savefig("quijanoSantiago_TF_interpola.pdf")
 print("No se observan grandes diferencias entre las transformadas de fourier de la frecuencia principal. Sin embargo para la segunda frecuencia mas importante se ve una disminucion importante que se ha perdido. Las otras frecuencias parecen comportarse de manera similar, incluyendo aquella entre las frecuencias principales.")
 
 #funcion para pasar solo los valores menores a 1000
+#def bajos500(freq,sube):
+#	freqmenor=[]
+#	lista=[]
+#	for i in range(len(freq)):
+#		if (freq[i]<500 and freq[i]>-500):
+#			freqmenor.append(freq[i])
+#			lista.append(sube[i])
+#	return freqmenor, lista
+
 def bajos500(freq,sube):
-	freqmenor=[]
-	lista=[]
+	freqmenor=np.linspace(0,0,len(freq))
+	lista=np.linspace(0,0,len(sube))
 	for i in range(len(freq)):
-		if (freq[i]<500 and freq[i]>-500):
-			freqmenor.append(freq[i])
-			lista.append(sube[i])
+		if (abs(freq[i])<=1000):
+			freqmenor[i]=freq[i]
+			lista[i]=sube[i]
 	return freqmenor, lista
 
-cub500=bajos500(freqCub,tcub)
-cub1000=bajos(freqCub,tcub)
-cua500=bajos500(freqCua,tcua)
-cua1000=bajos(freqCua,tcua)
-ori500=bajos500(freqx,sumar)
-filtr=bajos(freqx,sumar)
+
+tcub2=transfor(xsen,cub)
+tcua2=transfor(xsen,cua)
+cub500=bajos500(freqCub,tcub2)
+cub1000=bajos2(freqCub,tcub2)
+cua500=bajos500(freqCua,tcua2)
+cua1000=bajos2(freqCua,tcua2)
+ori500=bajos500(freqx,sumar1)
+filtr=bajos2(freqx,sumar1)
+
+icub500=invrs(cub500[1],xsen)
+icub1000=invrs(cub500[1],xsen)
+icua500=invrs(cua500[1],xsen)
+icua1000=invrs(cua1000[1],xsen)
+iori500=invrs(ori500[1],xsen)
+iori1000=invrs(filtr2[1],xsen)
+
 
 #filtro
 plt.figure()
 plt.subplot(2,1,1)
-plt.plot(cub500[0],cub500[1],label="500 cubico")
-plt.plot(ori500[0],ori500[1],label="500 originales")
 plt.plot(cua500[0],cua500[1],label="500 cuadratico")
+#plt.plot(cub500[0],cub500[1],label="500 cubico")
+plt.plot(ori500[0],ori500[1],label="500 originales")
 plt.xlabel("tiempo")
 plt.ylabel("frecuencia")
 plt.legend()
 plt.title("Filtros 500")
 plt.subplot(2,1,2)
 plt.plot(cua1000[0],cua1000[1],label="500 cuadratico")
-plt.plot(cub1000[0],cub1000[1],label="1000 cubico")
+#plt.plot(cub1000[0],cub1000[1],label="1000 cubico")
 plt.plot(filtr[0],filtr[1],label="1000 originales")
 plt.xlabel("tiempo")
 plt.ylabel("frecuencia")
 plt.legend()
 plt.title("Filtros 1000")
-
-plt.savefig("quijanoSantiago_2Filtros.pdf")
+#plt.savefig("quijanoSantiago_2Filtros.pdf")
 #plt.show()
 
+#####
+#filtro
+plt.figure()
+plt.subplot(2,1,1)
+plt.plot(xsen,icub500,label="500 cubico")
+plt.plot(xsen,iori500,label="500 originales")
+plt.plot(xsen,icua500,label="500 cuadratico")
+
+plt.xlabel("tiempo")
+plt.ylabel("frecuencia")
+plt.legend()
+plt.title("Filtros 500")
+plt.subplot(2,1,2)
+plt.plot(xsen,icub1000,label="1000 cuadratico")
+plt.plot(xsen,icua1000,label="1000 cubico")
+plt.plot(xsen,iori1000,label="1000 originales")
+plt.xlabel("tiempo")
+plt.ylabel("frecuencia")
+plt.legend()
+plt.title("Filtros 1000")
+plt.savefig("quijanoSantiago_2Filtros.pdf")
+plt.show()

@@ -35,10 +35,10 @@ for i in range(np.shape(preli)[0]):
 			datosMal[i,j]=float(preli[i,j])
 			datos[i,j-2]=float(preli[i,j])
 	
-
-print(malignos)
-print(w,k)
-print(len(malignos))
+#print(preli[:,1])
+#print(malignos)
+#print(w,k)
+#print(len(malignos))
 
 hola=np.array([[1,2,1], [4,2,13],[7,8,1], [8,4,5]])
 chao=np.array([3,4])
@@ -92,16 +92,25 @@ malPlot=np.matmul(malignos,vectores)
 #malPlot2=np.matmul(malignos,vectores[1])
 princi=np.matmul(datos,vectores[2])
 
+PC1=pEje[:,0]
+PC2=pEje[:,1]
+
+print ("el eje principal es:",PC1)
+
+print ("El eje secundario es:", PC2)
 plt.figure()
 plt.title("PCA, primeros componentes")
 plt.scatter(benPlot[:,0],benPlot[:,1],label="benignos")
 plt.scatter(malPlot[:,0],malPlot[:,1],label="malignos")
+plt.xlabel("PC1")
+plt.ylabel("PC2")
+plt.legend()
+plt.grid()
 plt.show()
 
 plt.figure()
 plt.plot(princi)
 plt.title("otro")
-
 
 
 print("El metodo de pca ayuda a reducir las variables que se usan para analizar un problema. Por esto podria ser util en este caso, ya que, se hace un estudio con muchas variables. Sin embargo no parce que se separen mucho los grupos de beningno y maligno. Por lo cual puede que estos dos ejes no ayuden a clarificar el tipo de tumor.")
