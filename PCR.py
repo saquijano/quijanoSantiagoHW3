@@ -7,7 +7,7 @@ preli=np.genfromtxt("WDBC.dat",delimiter=",",dtype='U16')
 filas=np.shape(preli)[0]
 colum=np.shape(preli)[1]
 datos=np.zeros((filas,colum-2))
-datosMal=np.zeros((filas,colum))
+datosTod=np.zeros((filas,colum))
 #numeros los meti a mano despues de contarlos con k y w
 benignos=np.zeros((357,np.shape(datos)[1]))
 malignos=np.zeros((212,np.shape(datos)[1]))
@@ -21,28 +21,30 @@ w=0
 for i in range(np.shape(preli)[0]):
 	for j in range(np.shape(preli)[1]):
 		if (j==0):
-			datosMal[i,j]=float(preli[i,j])
+			datosTod[i,j]=float(preli[i,j])
 		elif (j==1):
 			if (preli[i,j]=='B'):
-				datosMal[i,j]=1
+				datosTod[i,j]=1
 				benignos[k,:]=preli[i,j+1:]
 				k=k+1
 			else:
-				datosMal[i,j]=0
+				datosTod[i,j]=0
 				malignos[w,:]=preli[i,j+1:]
 				w=w+1
 		else:
-			datosMal[i,j]=float(preli[i,j])
 			datos[i,j-2]=float(preli[i,j])
-	
-#print(preli[:,1])
-#print(malignos)
-#print(w,k)
-#print(len(malignos))
+			datosTod
 
-hola=np.array([[1,2,1], [4,2,13],[7,8,1], [8,4,5]])
-chao=np.array([3,4])
 
+
+def norma(datos,benignos,malignos):
+	for i in range(np.shape(datos)[1]):
+		prome=np.mean(datos[:,i])
+		desv=np.std(datos[:,i])
+		datos[:,i]=(datos[:,i]-prome)/desv
+		benignos[:,i]=(benignos[:,i]-prome)/desv
+		malignos[:,i]=(malignos[:,i]-prome)/desv	
+	return datos, benignos, malignos
 
 def matrizCov(datos):
 	variables=np.shape(datos)[1]
@@ -61,22 +63,15 @@ def matrizCov(datos):
 	return matriz
 
 
-matriz=matrizCov(datos)
-matriz2=np.cov(datos)
-#cero=matriz-matriz2
+datosNor=norma(datos,benignos,malignos)[0]
+benigNor=norma(datos,benignos,malignos)[1]
+maligNor=norma(datos,benignos,malignos)[2]
+
+matriz=matrizCov(datosNor)
+
 valores=np.linalg.eig(matriz)[0]
 vectores=np.linalg.eig(matriz)[1]
 
-# no lo uso, es evidente cuales son
-def factoresPri(valores,vectores):
-	temporal=0
-	temporal2=0
-	for i in range(len(valores)):
-		if (temporal<valores[i] and temporal2<valores[i]):
-			temporal=valores[i]
-		elif (temporal2<valores[i] and temporal<valores[i]):
-			temporal2=valores[i]		
-	return temporal,temporal2
 
 print("valor propio principal, el 1:", valores[0])
 print("Con vector propio:", vectores[:,0])
@@ -84,14 +79,14 @@ print("Con vector propio:", vectores[:,0])
 print("vectores propio secundario, el 2", valores[1])
 print("Con vector propio:", vectores[:,1])
 
-pEje=np.matmul(datos,vectores)
+pEje=np.matmul(datosNor,vectores)
 print(np.shape(pEje))
-benPlot=np.matmul(benignos,vectores)
+benPlot=np.matmul(benigNor,vectores)
 #benPlot2=np.matmul(benignos,vectores[1])
 
-malPlot=np.matmul(malignos,vectores)
+malPlot=np.matmul(maligNor,vectores)
 #malPlot2=np.matmul(malignos,vectores[1])
-princi=np.matmul(datos,vectores[2])
+#princi=np.matmul(datos,vectores[2])
 
 PC1=pEje[:,0]
 PC2=pEje[:,1]
@@ -107,9 +102,8 @@ plt.xlabel("PC1")
 plt.ylabel("PC2")
 plt.legend()
 plt.grid()
-#plt.savefig("hola.pdf")
-plt.show()
+plt.savefig("quijanoSantiago_PCA.pdf")
 
 
 
-print("El metodo de pca prodria se util en este caso porque ademas de reducir las variables de estudio permite identificar algunos tumores malignos. Si el paciente muestra un valor elevado en el componente principal (PC1) despues de reducir las variables, posiblemente presente un tumor maligno. Sin embargo, este diagnostico es util solo si el valor de PC1 es muy elevado, ya que debajo de 1500 los tumores benignos y malignos se superpoenen. De igual forma solo a valores muy bajos de PC1 se podria cosniderar como benigno el tumor.")
+print("El metodo de pca es util en este caso porque ademas de reducir las variables de estudio permite identificar algunos tumores malignos. Si el paciente muestra un valor elevado en el componente principal (PC1) y un valor negativo en el componente secundario (PC2) posiblemente sea un tumor maligno. Por otra parte si presenta valores negativos en PC1 y positivos de PC2, posiblemente sea un tumor benigno. En los otros dos cuadrantes presentan un division entre maligno donde se observa que valores mas cercanos a 0 de PC1 y positvos de PC2 van a asociarse con tumores benignos y valores negativos de PC2 con valores negativos cercanos a 0 de PC1 se asocian con tumores malignos.")

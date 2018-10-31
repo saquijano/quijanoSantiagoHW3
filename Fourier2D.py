@@ -6,7 +6,7 @@ from scipy.fftpack import fft, fftfreq, ifft, fft2, ifft2, fftshift, ifftshift
 
 
 arbol=plt.imread("arbol.png")
-plt.imshow(arbol)
+#plt.imshow(arbol)
 
 
 #transformada
@@ -17,7 +17,7 @@ shi=fftshift(trans)
 grashi=np.abs(shi)
 fgraf=np.log(grashi)
 
-#grafica de la transformada
+#grafica de la transformada se uso logaritmo para que se note mas
 plt.figure()
 plt.imshow(abs(fgraf), cmap='gray')
 plt.title("Transformada de Fourier")
@@ -61,11 +61,13 @@ plt.title("Transformada filtrada")
 plt.imshow(graficarFil, cmap='gray')
 plt.ylabel("frecuencia")
 plt.xlabel(" ")
+plt.colorbar()
 plt.savefig("quijanoSantiago_FT2D_filtrada.pdf")
 
 plt.figure()
 plt.title("Imagen despues de filtro")
 plt.imshow(abs(invX2))
 plt.savefig("quijanoSantiago_Imagen_Filtrada.pdf")
+#plt.show()
 #######
 

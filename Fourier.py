@@ -122,8 +122,8 @@ xinc=incompletos[:,0]
 yinc=incompletos[:,1]
 
 #parte datos incompletos
-
-print("A los datos incompletos si se le puede hacer una transformada de fourier pero parece que esta funcion tiene menos frecuencias, ya que tiene menos ruido. Por esto no tiene sentido realizar una transformada de fourier")
+print("--------")
+print("No se puede realizar la transformada de fourier porque los datos no tienen el mismo espaciento de tiempo. En si, se podria realizar la transformada pero la transformacin devuelve informacion falsa")
 
 
 def interpolar (x,y):
@@ -160,19 +160,23 @@ plt.plot(freqCua,tcua,label="cuadrada",c="b")
 plt.xlabel("frecuencia")
 plt.ylabel("Trans. Fourier")
 plt.legend()
+plt.xlim(-1200,1200)
 plt.subplot(3,1,2)
 plt.plot(freqx,sumar,label="completa",c="y")
 plt.xlabel("frecuencia")
 plt.ylabel("Trans. Fourier")
 plt.legend()
+plt.xlim(-1200,1200)
 plt.subplot(3,1,3)
 plt.plot(freqCub,tcub,label="cubica",c="g")
 plt.xlabel("frecuencia")
 plt.ylabel("Trans. Fourier")
 plt.legend()
+plt.xlim(-1200,1200)
 plt.savefig("quijanoSantiago_TF_interpola.pdf")
 
-print("No se observan grandes diferencias entre los valores obtenidos en la transformadas de fourier de la frecuencia principal. Sin embargo para la segunda frecuencia mas importante se ve una disminucion importante, infromacion que se ha perdido. Las otras frecuencias parecen comportarse de manera similar, incluyendo aquella entre las frecuencias principales. La frecuencias en las transformaciones interpoladas parecen concentrarse entre -2500 y 2500, mientra la original tiene frecuencias que van de -10000 a 10000.")
+print("-----")
+print("No se observan grandes diferencias entre los valores obtenidos en la transformadas de fourier de las tres frecuencia principales. Sin embargo la frecuencia de 480 tiene menor valor en las interpolaciones. La informacion, aunque se recupera parcialmente al interpolar, no se recupera toda. Hay mas ruido en frecuencias amas importante se ve una disminucion importante, infromacion que se ha perdido. Las otras frecuencias parecen comportarse de manera similar, incluyendo aquella entre las frecuencias principales. La frecuencias en las transformaciones interpoladas parecen concentrarse entre -2500 y 2500, mientra la original tiene frecuencias que van de -10000 a 10000.")
 
 #funcion para pasar solo los valores menores a 1000
 #def bajos500(freq,sube):
@@ -251,6 +255,4 @@ plt.xlabel("tiempo")
 plt.ylabel("y(t)")
 plt.legend()
 plt.savefig("quijanoSantiago_2Filtros.pdf")
-plt.show()
-
 
