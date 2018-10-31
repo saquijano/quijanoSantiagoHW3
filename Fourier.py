@@ -3,6 +3,7 @@ import matplotlib.pylab as plt
 import scipy as sp
 from scipy.fftpack import fft, fftfreq,ifft
 from scipy import interpolate
+import math
 
 senal=np.genfromtxt("signal.dat",delimiter=",")
 
@@ -38,7 +39,7 @@ def invrs(trans,xsen):
 	sumar=np.linspace(0,0,len(xsen))
 	for i in range(len(xsen)):
 		for j in range(len(trans)):
-			sumar[i]+=trans[j]*np.exp((+1j)*np.pi*2*j*i/512)
+			sumar[i]+=trans[j]*math.e**((+1j)*np.pi*2*j*i/512)
 	return sumar
 
 #uso los paquetes para recuperar las frecuencias
@@ -51,11 +52,9 @@ freqx=fftfreq(len(xsen),SS) #frecuencias de funcion
 plt.figure()
 plt.plot(freqx,sumar)
 plt.title("Transformada de fourier")
-plt.xlabel("frecuencia")
-plt.ylabel("")
+plt.xlabel("Frecuencia")
+plt.ylabel("Trans. Fourier")
 plt.savefig("quijanoSantiago_TF.pdf")
-#plt.show()
-
 
 #funcion que devuelve las frecuencias mas altas
 def principales(freqx):
@@ -92,13 +91,13 @@ def bajos2(freq,sube):
 filtr=bajos(freqx,sumar1) ###sumar es transformada
 filtr2=bajos2(freqx,sumar1)
 # filtrada de fourier
-plt.figure()
-plt.plot(filtr2[0],filtr2[1], label="1")
-plt.plot(filtr[0],filtr[1],label="2")
-plt.title("Transformada de fourier filtrada")
-plt.xlabel("frecuencia")
-plt.legend()
-plt.ylabel("")
+#plt.figure()
+#plt.plot(filtr2[0],filtr2[1], label="1")
+#plt.plot(filtr[0],filtr[1],label="2")
+#plt.title("Transformada de fourier filtrada")
+#plt.xlabel("frecuencia")
+#plt.legend()
+#plt.ylabel("Trans. Fourier")
 
 #trasnformada inversa uso los vaores de la transformada negativos y positivos realizo la inversa de la transformada de fourier
 invX=ifft(filtr2[1])
@@ -115,7 +114,6 @@ plt.xlabel("tiempo")
 plt.ylabel("y(x)")
 plt.legend()
 plt.savefig("quijanoSantiago_filtrada.pdf")
-#plt.show()
 
 ################################3
 incompletos=np.genfromtxt("incompletos.dat",delimiter=",")
@@ -156,25 +154,23 @@ freqCua=fftfreq(len(xsen),SS1) #frecuencias de funcion cuadrada
 
 ## transformdas de las interpolaciones
 plt.figure()
-plt.title("Las tres transformaciones de fourier")
 plt.subplot(3,1,1)
+plt.title("Las tres transformaciones de fourier")
 plt.plot(freqCua,tcua,label="cuadrada",c="b")
 plt.xlabel("frecuencia")
-plt.ylabel("y(x)")
+plt.ylabel("Trans. Fourier")
 plt.legend()
 plt.subplot(3,1,2)
 plt.plot(freqx,sumar,label="completa",c="y")
 plt.xlabel("frecuencia")
-plt.ylabel("y(x)")
+plt.ylabel("Trans. Fourier")
 plt.legend()
 plt.subplot(3,1,3)
 plt.plot(freqCub,tcub,label="cubica",c="g")
 plt.xlabel("frecuencia")
-plt.ylabel("y(x)")
+plt.ylabel("Trans. Fourier")
 plt.legend()
 plt.savefig("quijanoSantiago_TF_interpola.pdf")
-plt.show()
-
 
 print("No se observan grandes diferencias entre los valores obtenidos en la transformadas de fourier de la frecuencia principal. Sin embargo para la segunda frecuencia mas importante se ve una disminucion importante, infromacion que se ha perdido. Las otras frecuencias parecen comportarse de manera similar, incluyendo aquella entre las frecuencias principales. La frecuencias en las transformaciones interpoladas parecen concentrarse entre -2500 y 2500, mientra la original tiene frecuencias que van de -10000 a 10000.")
 
@@ -217,23 +213,23 @@ iori1000=invrs(filtr2[1],xsen)
 
 
 #filtro funciones transformadas filtras
-plt.figure()
-plt.subplot(2,1,1)
-plt.plot(cua500[0],cua500[1],label="500 cuadratico")
-plt.plot(cub500[0],cub500[1],label="500 cubico")
-plt.plot(ori500[0],ori500[1],label="500 originales")
-plt.xlabel("tiempo")
-plt.ylabel("frecuencia")
-plt.legend()
-plt.title("Filtros 500")
-plt.subplot(2,1,2)
-plt.plot(cua1000[0],cua1000[1],label="500 cuadratico")
-plt.plot(cub1000[0],cub1000[1],label="1000 cubico")
-plt.plot(filtr[0],filtr[1],label="1000 originales")
-plt.xlabel("tiempo")
-plt.ylabel("frecuencia")
-plt.title("Filtros 1000")
-plt.legend()
+#plt.figure()
+#plt.subplot(2,1,1)
+#plt.plot(cua500[0],cua500[1],label="500 cuadratico")
+#plt.plot(cub500[0],cub500[1],label="500 cubico")
+#plt.plot(ori500[0],ori500[1],label="500 originales")
+#plt.xlabel("tiempo")
+#plt.ylabel("frecuencia")
+#plt.legend()
+#plt.title("Filtros 500")
+#plt.subplot(2,1,2)
+#plt.plot(cua1000[0],cua1000[1],label="500 cuadratico")
+#plt.plot(cub1000[0],cub1000[1],label="1000 cubico")
+#plt.plot(filtr[0],filtr[1],label="1000 originales")
+#plt.xlabel("tiempo")
+#plt.ylabel("frecuencia")
+#plt.title("Filtros 1000")
+#plt.legend()
 
 
 #####
@@ -244,15 +240,17 @@ plt.plot(xsen,icub500,label="500 cubico")
 plt.plot(xsen,iori500,label="500 originales")
 plt.plot(xsen,icua500,label="500 cuadratico")
 plt.xlabel("tiempo")
-plt.ylabel("frecuencia")
+plt.ylabel("y(t)")
 plt.legend()
-plt.title("Filtros 500")
+plt.title("Senales filtradas")
 plt.subplot(2,1,2)
 plt.plot(xsen,icub1000,label="1000 cuadratico")
-plt.plot(xsen,icua1000,label="1000 cubico")
 plt.plot(xsen,iori1000,label="1000 originales")
+plt.plot(xsen,icua1000,label="1000 cubico")
 plt.xlabel("tiempo")
-plt.ylabel("frecuencia")
+plt.ylabel("y(t)")
 plt.legend()
-plt.title("Filtros 1000")
 plt.savefig("quijanoSantiago_2Filtros.pdf")
+plt.show()
+
+
